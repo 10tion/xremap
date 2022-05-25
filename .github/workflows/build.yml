@@ -25,16 +25,20 @@ jobs:
           - --features x11
           - --features gnome
           - --features sway
+        include:
+          - target: x86_64-unknown-linux-musl
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
         with:
-          profile: minimal
           toolchain: stable
+          profile: minimal
           override: true
+          target: ${{ matrix.target }}
       - uses: Swatinem/rust-cache@v1
+      - run: cargo install cross
       - name: cargo build
-        run: cargo build --release ${{ matrix.options }}
+        run: cargo build --release ${{ matrix.options }} --target ${{ matrix.target }}
 
   fmt:
     runs-on: ubuntu-latest
